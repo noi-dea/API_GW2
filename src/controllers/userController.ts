@@ -8,12 +8,7 @@ export const addUser = async (req:Request,res:Response)=>{
     try{
         const {name, email, avatar, password} = req.body;
         const encryptedPass = password //TODO password encryption --> happens durng auth creation
-        if (avatar){
-            const newUser = await User.create({name, email, avatar, password: encryptedPass});
-        } else {
-            const newUser = await User.create({name, email, password:encryptedPass});
-        }
-        // @ts-ignore
+        const newUser = await User.create({name, email, avatar, password: encryptedPass});
         res.status(201).json(newUser);
     }
     catch(err){
