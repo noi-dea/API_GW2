@@ -4,6 +4,7 @@ import cors from "cors";
 import express from "express";
 import { notFound } from "./controllers/notFoundController";
 import testRoutes from "./routes/exampleRoutes";
+import productRoutes from "./routes/productRoutes";
 import { helloMiddleware } from "./middleware/exampleMiddleware";
 import mongoose from "mongoose";
 
@@ -17,10 +18,14 @@ app.use(express.json());
 
 // Routes
 app.use("/api", helloMiddleware, testRoutes);
+app.use("/api", helloMiddleware, productRoutes);
 app.all("*", notFound);
 
 // Database connection
 try {
+  if (!process.env.MONGO_URI) {
+    throw new Error("MONGO_URI is not defined");
+  }
   await mongoose.connect(process.env.MONGO_URI!);
   console.log("Database connection OK");
 } catch (err) {
