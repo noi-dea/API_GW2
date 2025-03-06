@@ -21,3 +21,18 @@ export const addUser = async (req:Request,res:Response)=>{
         }
     }
 }
+
+// Get all users
+export const getUsers = async (req:Request, res:Response)=>{
+    try{
+        const users = await User.find();
+        res.status(200).json(users);
+    }
+    catch(err){
+        if (err instanceof Error){
+            res.status(500).json({message: err.message});
+        } else {
+            res.status(500).json({message: "Something went wrong"});
+        }
+    }
+}
