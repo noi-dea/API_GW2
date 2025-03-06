@@ -36,3 +36,19 @@ export const getUsers = async (req:Request, res:Response)=>{
         }
     }
 }
+
+// Get user with specific ID
+export const getUserById = async (req:Request, res:Response)=>{
+    try{
+        const {id} = req.params;
+        const user = await User.findById(id);
+        res.status(200).json(user);
+    }
+    catch(err){
+        if (err instanceof Error){
+            res.status(500).json({message: err.message});
+        } else {
+            res.status(500).json({messsage: "Something went wrong"});
+        }
+    }
+}
