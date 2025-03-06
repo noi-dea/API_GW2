@@ -5,6 +5,7 @@ import express from "express";
 import { notFound } from "./controllers/notFoundController";
 import testRoutes from "./routes/exampleRoutes";
 import userRoutes from "./routes/userRoutes";
+import typeRoutes from "./routes/typeRoutes";
 import { helloMiddleware } from "./middleware/exampleMiddleware";
 import mongoose from "mongoose";
 
@@ -19,6 +20,7 @@ app.use(express.json());
 // Routes
 app.use("/api", helloMiddleware, testRoutes);
 app.use("/api", helloMiddleware, userRoutes);
+app.use("/api", helloMiddleware, typeRoutes);
 app.all("*", notFound);
 
 // Database connection
