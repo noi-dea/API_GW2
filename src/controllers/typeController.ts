@@ -23,7 +23,8 @@ export const getTypes = async(req:Request, res:Response)=>{
 export const getTypeByName = async (req:Request, res:Response)=>{
     try{
         const {name} = req.params;
-        const type = await Type.findOne().where("name").equals(name);
+        const value = name.toLocaleLowerCase();
+        const type = await Type.findOne().where("name").equals(value);
         res.status(200).json(type);
     }
     catch(err){
