@@ -17,3 +17,20 @@ export const getTypes = async(req:Request, res:Response)=>{
         }
     }
 }
+
+
+// Get the type by name (for sorting purposes)
+export const getTypeByName = async (req:Request, res:Response)=>{
+    try{
+        const {name} = req.params;
+        const type = await Type.findOne().where("name").equals(name);
+        res.status(200).json(type);
+    }
+    catch(err){
+        if (err instanceof Error){
+            res.status(500).json({message: err.message});
+        } else {
+            res.status(500).json({message: "Something went wrong"});
+        }
+    }
+}
