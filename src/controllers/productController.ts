@@ -2,6 +2,7 @@ import { Request, Response } from "express";
 import { Product } from "../models/productModel";
 import { Error as MongooseError } from "mongoose";
 const { ValidationError } = MongooseError;
+import { Type } from "../models/typeModel";
 
 // Create/add a product into the database
 export const addProduct = async (req: Request, res: Response) => {
@@ -65,3 +66,23 @@ export const getProduct = async (req: Request, res: Response) => {
     }
   }
 };
+
+// retrieve the products based on type
+export const getProductsByType = async (req:Request, res:Response) =>{
+  try{
+    const {typeName} = req.params;
+    const type = await Type.findOne().where("name").equals(typeName.toLocaleLowerCase());
+    const products = await Product.find().populate("types");
+    // @ts-ignore
+    const filteredProducts = products.filter((product)=>product.types.find(el=> el._id.toString() == type._id.toString()));
+    res.status(200).json(filteredProducts);
+
+  }
+  catch(err){
+    if(err instanceof Error){
+      res.status(500).json({message: err.message});
+    } else {
+      res.status(500).json({message: "Something went wrong"});
+    }
+  }
+}
