@@ -1,9 +1,16 @@
 import express from "express";
 
-import { addProduct } from "../controllers/productController";
+import {
+  addProduct,
+  getAllProducts,
+  getProduct,
+} from "../controllers/productController";
 
 const router = express.Router();
 
-router.post("/products", addProduct);
+router
+  .get("/products", getAllProducts)
+  .get("/products/:id", getProduct)
+  .post("/products", addProduct);
 
 export default router;
