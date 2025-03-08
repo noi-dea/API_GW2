@@ -11,7 +11,13 @@ const productSchema = new mongoose.Schema(
       type: Number,
       required: true,
     },
-    abilities: [{ type: mongoose.Schema.Types.ObjectId, ref: "Ability" }],
+    abilities: {
+      type: [{
+        name: String,
+        cost: Number,
+        damage: Number,
+      }],
+    },
     imageURL: {
       type: String,
       required: false,
