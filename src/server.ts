@@ -11,6 +11,8 @@ import typeRoutes from "./routes/typeRoutes";
 import { helloMiddleware } from "./middleware/exampleMiddleware";
 import mongoose from "mongoose";
 import { isAuth } from "./middleware/authMiddleWare";
+import cookieParser from 'cookie-parser';
+
 
 // Variables
 const app = express();
@@ -18,6 +20,7 @@ const PORT = process.env.PORT || 3000;
 
 // Middleware
 app.use(cors());
+app.use(cookieParser());
 app.use(express.json());
 
 // Routes
