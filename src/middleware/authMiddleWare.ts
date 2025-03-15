@@ -12,6 +12,7 @@ export const isAuth = async (req: Request, res: Response, next: NextFunction) =>
     throw new Error("Internal error");
   }
   const user = jwt.verify(token, JWT_SECRET);
+//   @ts-ignore
   req.user = user;
   next();
 };
