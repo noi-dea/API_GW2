@@ -8,6 +8,14 @@ const transactionSchema = new mongoose.Schema({
     products:{
         type: [mongoose.Types.ObjectId],
         ref: "Product"
+    },
+    price:{
+        type: Number,
+        required: true
+    },
+    date:{
+        type: Date,
+        required: true
     }
 });
 
