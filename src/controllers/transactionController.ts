@@ -44,8 +44,22 @@ export const getTransactions = async (req:Request, res:Response)=>{
 export const getTransactionById = async(req:Request, res:Response)=>{
     try{
         const {id} = req.params;
-        const transaction = await Transaction.findOne({buyer:id});
+        const transaction = await Transaction.findOne({_id:id});
         res.status(200).json(transaction);
+    }
+    catch(err){
+        err instanceof Error
+            ? res.status(500).json({message: err.message})
+            : res.status(500).json({message: "Something went wrong"});
+    }
+}
+
+// Get all transactions of  certain user
+export const getTransactionsByBuyerId = async (req:Request, res:Response)=>{
+    try{
+        const {id} = req.params;
+        const transactions = await Transaction.find({buyer: id});
+        res.status(200).json(transactions);
     }
     catch(err){
         err instanceof Error
