@@ -3,13 +3,14 @@ import "dotenv/config";
 import cors from "cors";
 import express from "express";
 import { notFound } from "./controllers/notFoundController";
-import testRoutes from "./routes/exampleRoutes";
+import setterRoutes from "./routes/setterRoutes";
 import userRoutes from "./routes/userRoutes";
 import productRoutes from "./routes/productRoutes";
 import authRoutes from "./routes/authRoutes";
 import typeRoutes from "./routes/typeRoutes";
 import { helloMiddleware } from "./middleware/exampleMiddleware";
 import mongoose from "mongoose";
+import { isAuth } from "./middleware/authMiddleWare";
 
 // Variables
 const app = express();
@@ -20,11 +21,11 @@ app.use(cors());
 app.use(express.json());
 
 // Routes
-app.use("/api", helloMiddleware, testRoutes);
 app.use("/api", helloMiddleware, userRoutes);
 app.use("/api", helloMiddleware, productRoutes);
 app.use("/api", helloMiddleware, typeRoutes);
 app.use("/api", helloMiddleware, authRoutes);
+app.use("/api", isAuth, setterRoutes);
 app.all("*", notFound);
 
 // Database connection

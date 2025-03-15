@@ -12,7 +12,6 @@ const router = express.Router();
 router
   .get("/products", getAllProducts)
   .get("/products/:id", getProduct)
-  .get("/products/types/:typeName", getProductsByType)
-  .post("/products", addProduct);
-
+  .get("/products/types/:typeName", getProductsByType);
+  
 export default router;
