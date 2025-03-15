@@ -6,6 +6,7 @@ import { notFound } from "./controllers/notFoundController";
 import testRoutes from "./routes/exampleRoutes";
 import userRoutes from "./routes/userRoutes";
 import productRoutes from "./routes/productRoutes";
+import authRoutes from "./routes/authRoutes";
 import typeRoutes from "./routes/typeRoutes";
 import { helloMiddleware } from "./middleware/exampleMiddleware";
 import mongoose from "mongoose";
@@ -23,6 +24,7 @@ app.use("/api", helloMiddleware, testRoutes);
 app.use("/api", helloMiddleware, userRoutes);
 app.use("/api", helloMiddleware, productRoutes);
 app.use("/api", helloMiddleware, typeRoutes);
+app.use("/api", helloMiddleware, authRoutes);
 app.all("*", notFound);
 
 // Database connection
