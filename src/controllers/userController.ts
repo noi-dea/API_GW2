@@ -2,12 +2,14 @@ import { Request, Response } from "express";
 import { User } from "../models/userModel";
 import { Error as MongooseError } from "mongoose";
 const { ValidationError } = MongooseError;
+import bcrypt from "bcrypt";
 
+const saltRounds = 10;
 // Create/add a user into the database
 export const addUser = async (req:Request,res:Response)=>{
     try{
         const {name, email, avatar, password} = req.body;
-        const encryptedPass = password //TODO password encryption --> happens durng auth creation
+        const encryptedPass = await bcrypt.hash(password, saltRounds); 
         const newUser = await User.create({name, email, avatar, password: encryptedPass});
         res.status(201).json(newUser);
     }
