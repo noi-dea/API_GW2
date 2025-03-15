@@ -3,6 +3,7 @@ import { Transaction } from "../models/transactionModel";
 import { Error as MongooseError } from "mongoose";
 const { ValidationError } = MongooseError;
 
+// create a transaction
 export const addTransaction = async (req:Request, res:Response)=>{
     try{
         const {id, products, price} = req.body;
@@ -23,5 +24,18 @@ export const addTransaction = async (req:Request, res:Response)=>{
         } else {
             res.status(500).json({message: "Something went wrong"});
         }
+    }
+}
+
+// get all transactions
+export const getTransactions = async (req:Request, res:Response)=>{
+    try{
+        const transactions = await Transaction.find();
+        res.status(200).json(transactions);
+    }
+    catch(err){
+        err instanceof Error
+            ? res.status(500).json({message: err.message})
+            : res.status(500).json({message:"Something went wrong"});
     }
 }
