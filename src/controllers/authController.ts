@@ -86,7 +86,7 @@ export const login = async(req:Request, res:Response)=>{
         // Check if passwords match
         const isMatch = await bcrypt.compare(password, user.password);
         // if passwords don't match
-        if (isMatch){
+        if (!isMatch){
             res.status(400).json({message:"Invalid input, either email or password is incorrect"});
             return;
         }
@@ -136,6 +136,7 @@ export const logout = async(req:Request, res:Response) =>{
             sameSite: "none",
             maxAge: 1,
           });
+          res.status(200).json({message: "Logout successfull"});
     }
     catch(err){
         if(err instanceof Error){
