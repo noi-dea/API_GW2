@@ -68,21 +68,33 @@ export const getProduct = async (req: Request, res: Response) => {
 };
 
 // retrieve the products based on type
-export const getProductsByType = async (req:Request, res:Response) =>{
-  try{
-    const {typeName} = req.params;
-    const type = await Type.findOne().where("name").equals(typeName.toLocaleLowerCase());
+export const getProductsByType = async (req: Request, res: Response) => {
+  try {
+    const { typeName } = req.params;
+    const type = await Type.findOne()
+      .where("name")
+      .equals(typeName.toLocaleLowerCase());
     const products = await Product.find().populate("types");
     // @ts-ignore
-    const filteredProducts = products.filter((product)=>product.types.find(el=> el._id.toString() == type._id.toString()));
+    const filteredProducts = products.filter((product) =>
+      product.types.find((el) => el._id.toString() == type._id.toString())
+    );
     res.status(200).json(filteredProducts);
-
-  }
-  catch(err){
-    if(err instanceof Error){
-      res.status(500).json({message: err.message});
+  } catch (err) {
+    if (err instanceof Error) {
+      res.status(500).json({ message: err.message });
     } else {
-      res.status(500).json({message: "Something went wrong"});
+      res.status(500).json({ message: "Something went wrong" });
     }
   }
-}
+};
+
+// Fetch Data for Dashboard
+export const renderDashboard = async (req: Request, res: Response) => {
+  try {
+    const products = await Product.find().populate("types");
+    res.render("dashboard", { products });
+  } catch (err) {
+    res.status(500).json({ error: "Something went wrong" });
+  }
+};

@@ -12,8 +12,8 @@ import transactionRoutes from "./routes/transactionRoutes";
 import { helloMiddleware } from "./middleware/exampleMiddleware";
 import mongoose from "mongoose";
 import { isAuth } from "./middleware/authMiddleWare";
-import cookieParser from 'cookie-parser';
-
+import cookieParser from "cookie-parser";
+import { renderDashboard } from "./controllers/productController";
 
 // Variables
 const app = express();
@@ -31,6 +31,7 @@ app.use("/api", helloMiddleware, typeRoutes);
 app.use("/api", helloMiddleware, authRoutes);
 app.use("/api", isAuth, setterRoutes);
 app.use("/api", isAuth, transactionRoutes);
+app.get("/dashboard", renderDashboard);
 app.all("*", notFound);
 
 // Database connection
