@@ -19,6 +19,12 @@ import { renderDashboard } from "./controllers/productController";
 const app = express();
 const PORT = process.env.PORT || 3000;
 
+// Set EJS as the view engine
+app.set("view engine", "ejs");
+app.set("views", "views");
+// Serve static files like CSS and JS
+app.use(express.static("public"));
+
 // Middleware
 app.use(cors());
 app.use(cookieParser());
@@ -32,6 +38,9 @@ app.use("/api", helloMiddleware, authRoutes);
 app.use("/api", isAuth, setterRoutes);
 app.use("/api", isAuth, transactionRoutes);
 app.get("/dashboard", renderDashboard);
+// app.get("/dashboard", (req, res) => {
+//   res.render("dashboard", { products: [] }); // Empty array test
+// });
 app.all("*", notFound);
 
 // Database connection

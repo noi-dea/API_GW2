@@ -5,6 +5,7 @@ import {
   getAllProducts,
   getProduct,
   getProductsByType,
+  deleteProduct,
 } from "../controllers/productController";
 
 const router = express.Router();
@@ -12,6 +13,6 @@ const router = express.Router();
 router
   .get("/products", getAllProducts)
   .get("/products/:id", getProduct)
-  .get("/products/types/:typeName", getProductsByType);
-  
+  .get("/products/types/:typeName", getProductsByType)
+  .delete("/products/:id", deleteProduct);
 export default router;

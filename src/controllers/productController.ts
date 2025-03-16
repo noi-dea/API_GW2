@@ -95,6 +95,28 @@ export const renderDashboard = async (req: Request, res: Response) => {
     const products = await Product.find().populate("types");
     res.render("dashboard", { products });
   } catch (err) {
-    res.status(500).json({ error: "Something went wrong" });
+    console.error("Error fetching products:", err);
+    res.status(500).send("Internal Server Error");
+  }
+};
+
+// Delete a product
+export const deleteProduct = async (req: Request, res: Response) => {
+  try {
+    const { id } = req.params;
+
+    if (!id) {
+      return res.status(400).json({ message: "Product ID is required" });
+    }
+
+    const deletedProduct = await Product.findByIdAndDelete(id);
+
+    if (!deletedProduct) {
+      return res.status(404).json({ message: "Product not found" });
+    }
+
+    res.status(200).json({ message: "Product deleted successfully" });
+  } catch (err) {
+    res.status(500).json({ message: "Error deleting product", error: err });
   }
 };
