@@ -42,7 +42,7 @@ export const register = async(req:Request, res:Response)=>{
         const token = await signToken({
             user: userResponse,
             secret: SECRET,
-            expiresIn: "1h",
+            expiresIn: "1d",
         });
 
         // Cookie aanmaken
@@ -50,7 +50,7 @@ export const register = async(req:Request, res:Response)=>{
             httpOnly: true,
             secure: process.env.NODE_ENV === "production" ? true : false,
             sameSite: "none",
-            maxAge: 60 * 60 * 1000,
+            maxAge: 24 * 60 * 60 * 1000,
         });
 
         res
@@ -105,7 +105,7 @@ export const login = async(req:Request, res:Response)=>{
         const token = await signToken({
             user: tokenUser,
             secret: SECRET,
-            expiresIn: "1h",
+            expiresIn: "1d",
           });
 
         //  create cookie
@@ -113,7 +113,7 @@ export const login = async(req:Request, res:Response)=>{
             httpOnly: true,
             secure: process.env.NODE_ENV === "production" ? true : false,
             sameSite: "none",
-            maxAge: 60 * 60 * 1000,
+            maxAge: 24 * 60 * 60 * 1000,
           });
 
         res.status(200).json({message: "Login successfull"});
