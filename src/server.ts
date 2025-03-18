@@ -11,7 +11,7 @@ import typeRoutes from "./routes/typeRoutes";
 import transactionRoutes from "./routes/transactionRoutes";
 import { helloMiddleware } from "./middleware/exampleMiddleware";
 import mongoose from "mongoose";
-import { isAuth } from "./middleware/authMiddleWare";
+import { isAuth, isAdmin } from "./middleware/authMiddleWare";
 import cookieParser from "cookie-parser";
 import { renderDashboard } from "./controllers/productController";
 
@@ -37,7 +37,7 @@ app.use("/api", helloMiddleware, typeRoutes);
 app.use("/api", helloMiddleware, authRoutes);
 app.use("/api", isAuth, setterRoutes);
 app.use("/api", isAuth, transactionRoutes);
-app.get("/dashboard", renderDashboard);
+app.get("/dashboard", isAuth, isAdmin, renderDashboard);
 // app.get("/dashboard", (req, res) => {
 //   res.render("dashboard", { products: [] }); // Empty array test
 // });

@@ -14,21 +14,23 @@ const userSchema = new mongoose.Schema(
       trim: true,
     },
     avatar: {
-        type: String,
-        required: false,
-        default: "https://i.pinimg.com/474x/72/48/77/724877d7438cd53dbe791b52019c5fe3.jpg",
+      type: String,
+      required: false,
+      default:
+        "https://i.pinimg.com/474x/72/48/77/724877d7438cd53dbe791b52019c5fe3.jpg",
     },
     password: {
-        type: String,
-        required: true,
-        trim: true,
+      type: String,
+      required: true,
+      trim: true,
     },
     wishlist: {
-        type: {
-            Array : mongoose.Schema.Types.ObjectId,
-        },
-        ref: "Product",
-    }
+      type: {
+        Array: mongoose.Schema.Types.ObjectId,
+      },
+      ref: "Product",
+    },
+    role: { type: String, enum: ["user", "admin"], default: "user" },
   },
   {
     timestamps: true,
