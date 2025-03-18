@@ -5,6 +5,9 @@ import { addTransaction } from "../controllers/transactionController";
 
 const router = Router();
 
-router.post("/products", addProduct).post("/users", addUser).post("/transactions", addTransaction);
+router
+  .post("/products", addProduct)
+  .post("/users", addUser)
+  .post("/transactions", addTransaction);
 
 export default router;

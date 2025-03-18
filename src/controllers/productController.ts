@@ -1,6 +1,6 @@
 import { Request, Response } from "express";
 import { Product } from "../models/productModel";
-import { Error as MongooseError } from "mongoose";
+import mongoose, { Error as MongooseError } from "mongoose";
 const { ValidationError } = MongooseError;
 import { Type } from "../models/typeModel";
 
@@ -108,7 +108,9 @@ export const deleteProduct = async (req: Request, res: Response) => {
     if (!id) {
       return res.status(400).json({ message: "Product ID is required" });
     }
-
+    if (!mongoose.Types.ObjectId.isValid(id)) {
+      return res.status(400).json({ message: "Invalid product ID format" });
+    }
     const deletedProduct = await Product.findByIdAndDelete(id);
 
     if (!deletedProduct) {
