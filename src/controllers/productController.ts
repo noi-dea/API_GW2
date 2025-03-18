@@ -3,6 +3,7 @@ import { Product } from "../models/productModel";
 import { Error as MongooseError } from "mongoose";
 const { ValidationError } = MongooseError;
 import { Type } from "../models/typeModel";
+import { Rarity } from "../models/rarityModel";
 
 // Create/add a product into the database
 export const addProduct = async (req: Request, res: Response) => {
@@ -84,5 +85,20 @@ export const getProductsByType = async (req:Request, res:Response) =>{
     } else {
       res.status(500).json({message: "Something went wrong"});
     }
+  }
+}
+
+// get products based on rarity
+export const getProductsByRarity = async (req:Request, res:Response)=>{
+  try{
+    const {rarityName} = req.params;
+    const rarity = await Rarity.find({name:rarityName.toLocaleLowerCase()});
+    const products = await Product.find().populate("rarity");
+    const filteredProducts = products.filter((products)=>Product.rarity.toString()==rarity.toString());
+  }
+  catch(err){
+    err instanceof Error
+      ? res.status(500).json({message: err.message})
+      : res.status(500).json({message: "Something went wrong"});
   }
 }
