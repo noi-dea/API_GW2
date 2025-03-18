@@ -13,12 +13,14 @@ const SECRET = process.env.JWT_SECRET;
 export const register = async (req: Request, res: Response) => {
   try {
     // retrieve fields
-    const { name, email, password } = req.body;
+    const { name, email, password, role } = req.body;
     // check if all fields are filled in
     if (!name || !email || !password) {
       res.status(400).json({ message: "All fields are required" });
       return;
     }
+
+    const userRole = role === "admin" ? "admin" : "user";
     // encrypt password
     const hashPass = await bcrypt.hash(password, saltRounds);
     // create user
@@ -26,6 +28,7 @@ export const register = async (req: Request, res: Response) => {
       name,
       email,
       password: hashPass,
+      role: userRole,
     });
 
     if (!SECRET) {
@@ -36,6 +39,7 @@ export const register = async (req: Request, res: Response) => {
       _id: response._id,
       name: response.name,
       email: response.email,
+      role: response.role,
     };
 
     // JWT aanmaken USER - SECRET - EXPIRESIN
@@ -53,6 +57,7 @@ export const register = async (req: Request, res: Response) => {
       maxAge: 24 * 60 * 60 * 1000,
     });
 
+    const redirectUrl = userRole === "admin" ? "/dashboard" : "/login";
     res
       .status(201)
       .json({ message: "User created successfully", user: userResponse });
@@ -70,6 +75,8 @@ export const login = async (req: Request, res: Response) => {
   try {
     // get login credentials
     const { email, password } = req.body;
+    // Debug log
+    console.log("Login attempt:", { email });
     // check if all credentials are given
     if (!email || !password) {
       res.status(400).json({ message: "fill in all fields" });
@@ -86,11 +93,9 @@ export const login = async (req: Request, res: Response) => {
     const isMatch = await bcrypt.compare(password, user.password);
     // if passwords don't match
     if (!isMatch) {
-      res
-        .status(400)
-        .json({
-          message: "Invalid input, either email or password is incorrect",
-        });
+      res.status(400).json({
+        message: "Invalid input, either email or password is incorrect",
+      });
       return;
     }
 
@@ -120,7 +125,11 @@ export const login = async (req: Request, res: Response) => {
       maxAge: 24 * 60 * 60 * 1000,
     });
 
-    res.status(200).json({ message: "Login successfull" });
+    // Redirect based on role
+    const redirectUrl = user.role === "admin" ? "/dashboard" : "/login";
+    res
+      .status(200)
+      .json({ message: "Login successfull", redirect: redirectUrl });
   } catch (err) {
     if (err instanceof Error) {
       res.status(500).json({ message: err.message });
