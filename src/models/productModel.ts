@@ -28,7 +28,8 @@ const productSchema = new mongoose.Schema(
       required: true,
     },
     rarity: {
-      type: String,
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Rarity",
       required: true,
     },
   },
