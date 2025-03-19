@@ -12,13 +12,20 @@ import rarityRoutes from "./routes/rarityRoutes";
 import transactionRoutes from "./routes/transactionRoutes";
 import { helloMiddleware } from "./middleware/exampleMiddleware";
 import mongoose from "mongoose";
-import { isAuth } from "./middleware/authMiddleWare";
-import cookieParser from 'cookie-parser';
-
+import { isAuth, isAdmin } from "./middleware/authMiddleWare";
+import { renderDashboard } from "./controllers/productController";
+import { login, logout, register } from "./controllers/authController";
+import cookieParser from "cookie-parser";
 
 // Variables
 const app = express();
 const PORT = process.env.PORT || 3000;
+
+// Set EJS as the view engine
+app.set("view engine", "ejs");
+app.set("views", "views");
+// Serve static files like CSS and JS
+app.use(express.static("public"));
 
 // Middleware
 app.use(cors());
@@ -33,6 +40,16 @@ app.use("/api", helloMiddleware, rarityRoutes);
 app.use("/api", helloMiddleware, authRoutes);
 app.use("/api", isAuth, setterRoutes);
 app.use("/api", isAuth, transactionRoutes);
+app.get("/login", (req, res) => res.render("login"));
+app.get("/register", (req, res) => res.render("register"));
+app.post("/register", register);
+app.post("/login", login);
+app.get("/logout", logout);
+app.get("/dashboard", isAuth, isAdmin, renderDashboard);
+
+// app.get("/dashboard", (req, res) => {
+//   res.render("dashboard", { products: [] }); // Empty array test
+// });
 app.all("*", notFound);
 
 // Database connection

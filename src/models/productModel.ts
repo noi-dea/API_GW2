@@ -12,11 +12,14 @@ const productSchema = new mongoose.Schema(
       required: true,
     },
     abilities: {
-      type: [{
-        name: String,
-        cost: Number,
-        damage: String,
-      }],
+      type: [
+        {
+          name: String,
+          cost: Number,
+          damage: Number,
+        },
+      ],
+      required: true,
     },
     imageURL: {
       type: String,
