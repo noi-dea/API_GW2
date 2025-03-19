@@ -4,6 +4,7 @@ import { Error as MongooseError } from "mongoose";
 const { ValidationError } = MongooseError;
 import { Type } from "../models/typeModel";
 import { Rarity } from "../models/rarityModel";
+import { type RarityType} from "../types";
 
 // Create/add a product into the database
 export const addProduct = async (req: Request, res: Response) => {
@@ -92,9 +93,21 @@ export const getProductsByType = async (req:Request, res:Response) =>{
 export const getProductsByRarity = async (req:Request, res:Response)=>{
   try{
     const {rarityName} = req.params;
-    const rarity = await Rarity.find({name:rarityName.toLocaleLowerCase()});
-    const products = await Product.find().populate("rarity");
-    const filteredProducts = products.filter((products)=>Product.rarity.toString()==rarity.toString());
+    const dbRarity:RarityType | null = await Rarity.findOne({name:rarityName});
+    const products = await Product.find().populate("rarity").populate("types");
+    if(!dbRarity){
+      res.status(400).json({message: "Invalid input"});
+      return;
+    }
+    if (!dbRarity._id){
+      res.status(500).json({message: "Something went wrong"});
+      return;
+    }
+
+    console.log("product.rarity._id.toString(): ", products[0].rarity._id.toString());
+    console.log("dbRarity._id.toString(): ", dbRarity._id.toString());
+    const filteredProducts = products.filter((product)=>product.rarity._id.toString()==dbRarity._id.toString());
+    res.status(200).json(filteredProducts);
   }
   catch(err){
     err instanceof Error
