@@ -106,15 +106,18 @@ export const deleteProduct = async (req: Request, res: Response) => {
     const { id } = req.params;
 
     if (!id) {
-      return res.status(400).json({ message: "Product ID is required" });
+      res.status(400).json({ message: "Product ID is required" });
+      return;
     }
     if (!mongoose.Types.ObjectId.isValid(id)) {
-      return res.status(400).json({ message: "Invalid product ID format" });
+      res.status(400).json({ message: "Invalid product ID format" });
+      return;
     }
     const deletedProduct = await Product.findByIdAndDelete(id);
 
     if (!deletedProduct) {
-      return res.status(404).json({ message: "Product not found" });
+      res.status(404).json({ message: "Product not found" });
+      return;
     }
 
     res.status(200).json({ message: "Product deleted successfully" });

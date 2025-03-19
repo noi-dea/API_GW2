@@ -15,7 +15,8 @@ export const isAuth = async (
     }
     if (!JWT_SECRET) {
       console.error("Error: JWT_SECRET is missing in .env");
-      return res.status(500).json({ message: "Internal server error" });
+      res.status(500).json({ message: "Internal server error" });
+      return;
     }
     try {
       const decoded = jwt.verify(token, JWT_SECRET);
@@ -25,23 +26,25 @@ export const isAuth = async (
       next();
     } catch (err) {
       console.error("Invalid or expired token:", err);
-      return res.status(401).json({ message: "Invalid or expired token" });
+      res.status(401).json({ message: "Invalid or expired token" });
+      return;
     }
   } catch (err) {
     console.error("Authentication Error:", err);
-    return res
-      .status(400)
-      .json({ message: "Bad Request - Authentication failed" });
+    res.status(400).json({ message: "Bad Request - Authentication failed" });
+    return;
   }
 };
 export const isAdmin = (req: Request, res: Response, next: NextFunction) => {
   try {
     // @ts-ignore
     if (!req.user || req.user.role !== "admin") {
-      return res.status(403).json({ message: "Access denied - Admins only" });
+      res.status(403).json({ message: "Access denied - Admins only" });
+      return;
     }
     next();
   } catch (err) {
-    return res.status(500).json({ message: "Server error" });
+    res.status(500).json({ message: "Server error" });
+    return;
   }
 };
