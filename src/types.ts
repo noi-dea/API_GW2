@@ -5,3 +5,7 @@ export type RarityType = {
     _id: mongoose.Schema.Types.ObjectId,
     name: string
 }
+
+export type RarityQueryType ={
+    rarities: string
+}
