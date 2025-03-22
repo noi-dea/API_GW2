@@ -8,8 +8,10 @@
   </head>
   <body>
     <div class="container">
-      <h1>Admin Dashboard</h1>
-
+      <div class="header">
+        <h1>Admin Dashboard</h1>
+        <button onclick="logout()" id="logoutBtn">Logout</button>
+      </div>
       <table>
         <thead>
           <tr>
@@ -56,6 +58,30 @@
           }
         } catch (error) {
           alert("An error occurred.");
+        }
+      }
+      async function logout() {
+        try {
+          const response = await fetch("api/logout", {
+            method: "GET",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            credentials: "include", // include cookies
+          });
+
+          const data = await response.json();
+          console.log("Logout response:", data);
+
+          if (response.ok) {
+            alert("You have been logged out.");
+            window.location.href = "/login"; // Redirect to login
+          } else {
+            alert("Failed to logout: " + data.message);
+          }
+        } catch (error) {
+          console.error("Logout error:", error);
+          alert("Something went wrong during logout.");
         }
       }
     </script>

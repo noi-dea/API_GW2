@@ -1,5 +1,15 @@
 @import url("https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;700&display=swap");
-
+:root {
+  font-size: 62.5%;
+}
+*,
+*::after,
+*::before {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
 body {
   font-family: Arial, sans-serif;
   background-color: #f4f4f4;
@@ -8,7 +18,8 @@ body {
 }
 
 .container {
-  width: 80%;
+  width: 60%;
+  min-width: 350px;
   margin: 50px auto;
   background: white;
   padding: 20px;
@@ -16,11 +27,27 @@ body {
   border-radius: 8px;
 }
 
+.header {
+  padding-bottom: 10px;
+}
 h1 {
   text-align: center;
   color: #333;
+  padding-bottom: 10px;
+}
+#logoutBtn {
+  float: right;
+  padding: 6px 14px;
+  background-color: #e53935;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
 }
 
+#logoutBtn:hover {
+  background-color: #c62828;
+}
 table {
   width: 100%;
   border-collapse: collapse;
@@ -50,4 +77,7 @@ th {
 
 .delete-btn:hover {
   background: darkred;
+}
+
+@media (max-width: 500px) {
 }

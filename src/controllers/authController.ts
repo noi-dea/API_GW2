@@ -60,7 +60,11 @@ export const register = async (req: Request, res: Response) => {
     const redirectUrl = userRole === "admin" ? "/dashboard" : "/login";
     res
       .status(201)
-      .json({ message: "User created successfully", user: userResponse });
+      .json({
+        message: "User created successfully",
+        user: userResponse,
+        redirect: redirectUrl,
+      });
   } catch (err) {
     if (err instanceof Error) {
       res.status(500).json({ message: err.message });
@@ -145,7 +149,7 @@ export const logout = async (req: Request, res: Response) => {
     res.cookie("token", "", {
       httpOnly: true,
       secure: process.env.NODE_ENV === "production" ? true : false,
-      sameSite: "none",
+      sameSite: process.env.NODE_ENV === "production" ? "strict" : "lax",
       maxAge: 1,
     });
     res.status(200).json({ message: "Logout successfull" });
