@@ -2,6 +2,10 @@ import { Request, Response } from "express";
 import { Bundle } from "../models/bundlesModel";
 import { Error as MongooseError } from "mongoose";
 const { ValidationError } = MongooseError;
+// @ts-ignore No typings package available for following package
+import FuzzyMatching from "fuzzy-matching";
+
+const match = new FuzzyMatching(["box", "booster", "booster-bundle", "etb"]);
 
 // Function to get all bundles from the database
 export const getAllBundles = async(req:Request, res:Response)=>{
@@ -51,14 +55,17 @@ export const getBundlesByQuery = async (req:Request, res:Response)=>{
        }
 
         const typesArr = type?.split(",")
+        const spellCheckedTypes = typesArr?.map((type)=>match.get(type).value);
+        console.log(spellCheckedTypes);
         const seriesArr = series?.split(",")
+        const spellCheckedSeries = seriesArr?.map((series)=>match.get(series).value);
         const bundles = await Bundle.find();
         // --
-        console.log(seriesArr);
+        console.log(spellCheckedSeries);
         const response = bundles.filter((bundle)=>{
            const containsType =  typesArr == null || typesArr == undefined
                 ? true
-                : typesArr.includes(bundle.type);
+                : spellCheckedTypes.includes(bundle.type);
             const containsSeries = seriesArr == null || seriesArr == undefined 
                 ? true
                 : seriesArr.includes(bundle.series);
