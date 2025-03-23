@@ -17,6 +17,8 @@ import { isAuth, isAdmin } from "./middleware/authMiddleWare";
 import { renderDashboard } from "./controllers/productController";
 import { login, logout, register } from "./controllers/authController";
 import cookieParser from "cookie-parser";
+import swaggerUi from "swagger-ui-express";
+import {specs} from "./swagger";
 
 // Variables
 const app = express();
@@ -52,6 +54,9 @@ app.get("/dashboard", isAuth, isAdmin, renderDashboard);
 // app.get("/dashboard", (req, res) => {
 //   res.render("dashboard", { products: [] }); // Empty array test
 // });
+// Swagger documentation
+app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(specs));
+
 app.all("*", notFound);
 
 // Database connection
