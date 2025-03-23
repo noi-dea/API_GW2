@@ -10,44 +10,78 @@
     <div class="container">
       <div class="header">
         <h1>Admin Dashboard</h1>
+        <div class="tabs">
+          <button onclick="showTab('products')">Products</button>
+          <button onclick="showTab('users')">Users</button>
+        </div>
         <button onclick="logout()" id="logoutBtn">Logout</button>
       </div>
-      <table>
-        <thead>
-          <tr>
-            <th>Name</th>
-            <th>Price</th>
-            <th>Type</th>
-            <th>Actions</th>
-          </tr>
-        </thead>
-        <tbody>
-          <% products.forEach(product => { %>
-          <tr id="row-<%= product._id %>">
-            <td><%= product.name %></td>
-            <td>$<%= product.price %></td>
-            <td><%= product.types.map(type => type.name).join(", ") %></td>
-            <td>
-              <button
-                class="delete-btn"
-                onclick="deleteProduct('<%= product._id %>')"
-              >
-                Delete
-              </button>
-            </td>
-          </tr>
-          <% }); %>
-        </tbody>
-      </table>
+
+      <!-- Products Table -->
+      <div id="products-tab">
+        <table>
+          <thead>
+            <tr>
+              <th>Name</th>
+              <th>Price</th>
+              <th>Type</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            <% products.forEach(product => { %>
+            <tr id="row-<%= product._id %>">
+              <td><%= product.name %></td>
+              <td>$<%= product.price %></td>
+              <td><%= product.types.map(type => type.name).join(", ") %></td>
+              <td>
+                <button
+                  class="delete-btn"
+                  onclick="deleteProduct('<%= product._id %>')"
+                >
+                  Delete
+                </button>
+              </td>
+            </tr>
+            <% }); %>
+          </tbody>
+        </table>
+      </div>
+
+      <!-- Users Table -->
+      <div id="users-tab" style="display: none">
+        <table>
+          <thead>
+            <tr>
+              <th>Email</th>
+              <th>Name</th>
+              <th>Role</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody id="user-body">
+            <!-- Populated by JS -->
+          </tbody>
+        </table>
+      </div>
     </div>
 
     <script>
+      function showTab(tab) {
+        document.getElementById("products-tab").style.display =
+          tab === "products" ? "block" : "none";
+        document.getElementById("users-tab").style.display =
+          tab === "users" ? "block" : "none";
+        if (tab === "users") loadUsers();
+      }
+
       async function deleteProduct(productId) {
         if (!confirm("Are you sure you want to delete this product?")) return;
 
         try {
           const response = await fetch(`/api/products/${productId}`, {
             method: "DELETE",
+            credentials: "include",
           });
 
           if (response.ok) {
@@ -60,28 +94,74 @@
           alert("An error occurred.");
         }
       }
+
       async function logout() {
         try {
-          const response = await fetch("api/logout", {
+          const response = await fetch("/api/logout", {
             method: "GET",
-            headers: {
-              "Content-Type": "application/json",
-            },
-            credentials: "include", // include cookies
+            credentials: "include",
           });
 
           const data = await response.json();
-          console.log("Logout response:", data);
-
           if (response.ok) {
             alert("You have been logged out.");
-            window.location.href = "/login"; // Redirect to login
+            window.location.href = "/login";
           } else {
             alert("Failed to logout: " + data.message);
           }
         } catch (error) {
-          console.error("Logout error:", error);
           alert("Something went wrong during logout.");
+        }
+      }
+
+      async function loadUsers() {
+        try {
+          const response = await fetch("/api/users/admin-view", {
+            method: "GET",
+            credentials: "include",
+          });
+
+          const users = await response.json();
+          const tbody = document.getElementById("user-body");
+          tbody.innerHTML = "";
+
+          users.forEach((user) => {
+            const tr = document.createElement("tr");
+            tr.innerHTML = `
+              <td>${user.email}</td>
+              <td>${user.name}</td>
+              <td>${user.role}</td>
+              <td>
+                <button onclick="changeRole('${user._id}', '${
+              user.role === "admin" ? "user" : "admin"
+            }')">
+                  Make ${user.role === "admin" ? "User" : "Admin"}
+                </button>
+              </td>
+            `;
+            tbody.appendChild(tr);
+          });
+        } catch (error) {
+          alert("Failed to load users.");
+        }
+      }
+
+      async function changeRole(userId, newRole) {
+        if (!confirm(`Change role to ${newRole}?`)) return;
+
+        try {
+          const response = await fetch(`/api/users/${userId}/role`, {
+            method: "PATCH",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ role: newRole }),
+            credentials: "include",
+          });
+
+          const data = await response.json();
+          alert(data.message);
+          loadUsers(); // Refresh user list
+        } catch (error) {
+          alert("Failed to change role.");
         }
       }
     </script>

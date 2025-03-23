@@ -15,6 +15,7 @@ export const addUser = async (req: Request, res: Response) => {
       email,
       avatar,
       password: encryptedPass,
+      role: "user",
     });
     res.status(201).json(newUser);
   } catch (err) {
@@ -54,5 +55,37 @@ export const getUserById = async (req: Request, res: Response) => {
     } else {
       res.status(500).json({ messsage: "Something went wrong" });
     }
+  }
+};
+
+export const updateUserRole = async (req: Request, res: Response) => {
+  const { id } = req.params;
+  const { role } = req.body;
+
+  if (!["admin", "user"].includes(role)) {
+    res.status(400).json({ message: "Invalid role" });
+    return;
+  }
+
+  try {
+    const user = await User.findByIdAndUpdate(id, { role }, { new: true });
+
+    if (!user) {
+      res.status(404).json({ message: "User not found" });
+      return;
+    }
+
+    res.status(200).json({ message: "User role updated", user });
+  } catch (err) {
+    res.status(500).json({ message: "Server error" });
+  }
+};
+
+export const getAllUsersDashboard = async (req: Request, res: Response) => {
+  try {
+    const users = await User.find().select("_id name email role");
+    res.status(200).json(users);
+  } catch (err) {
+    res.status(500).json({ message: "Something went wrong" });
   }
 };

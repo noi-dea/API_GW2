@@ -78,6 +78,14 @@ th {
 .delete-btn:hover {
   background: darkred;
 }
-
+.tabs {
+  margin-top: 1rem;
+}
+.tabs button {
+  margin-right: 10px;
+  padding: 0.5rem 1rem;
+  font-weight: bold;
+  cursor: pointer;
+}
 @media (max-width: 500px) {
 }

@@ -46,25 +46,30 @@ export const isAdmin = async (
     // @ts-ignore
     const userFromToken = req.user;
     if (!userFromToken) {
-      return res.status(401).json({ message: "Unauthorized" });
+      res.status(401).json({ message: "Unauthorized" });
+      return;
     }
 
     const user = await User.findById(userFromToken._id);
     if (!user) {
-      return res.status(404).json({ message: "User not found" });
+      res.status(404).json({ message: "User not found" });
+      return;
     }
 
     if (!user.isVerified) {
-      return res.status(403).json({ message: "Email not verified" });
+      res.status(403).json({ message: "Email not verified" });
+      return;
     }
 
     if (user.role !== "admin") {
-      return res.status(403).json({ message: "Access denied - Admins only" });
+      res.status(403).json({ message: "Access denied - Admins only" });
+      return;
     }
 
     next();
   } catch (err) {
     console.error("isAdmin middleware error:", err);
-    return res.status(500).json({ message: "Server error" });
+    res.status(500).json({ message: "Server error" });
+    return;
   }
 };
