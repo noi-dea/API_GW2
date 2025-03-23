@@ -1,7 +1,5 @@
 @import url("https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;700&display=swap");
-:root {
-  font-size: 62.5%;
-}
+
 *,
 *::after,
 *::before {
@@ -11,15 +9,13 @@
   list-style: none;
 }
 body {
-  font-family: Arial, sans-serif;
+  font-family: "Roboto", sans-serif;
   background-color: #f4f4f4;
-  margin: 0;
-  padding: 0;
 }
 
 .container {
   width: 60%;
-  min-width: 350px;
+  min-width: 600px;
   margin: 50px auto;
   background: white;
   padding: 20px;
@@ -28,64 +24,83 @@ body {
 }
 
 .header {
-  padding-bottom: 10px;
-}
-h1 {
   text-align: center;
-  color: #333;
-  padding-bottom: 10px;
+
+  flex-wrap: wrap;
 }
+
+.header h1 {
+  font-size: 24px;
+  margin-bottom: 20px;
+}
+
+.tabs {
+  display: flex;
+  gap: 10px;
+}
+.users-btn {
+  margin-right: auto;
+}
+.tabs button,
 #logoutBtn {
-  float: right;
-  padding: 6px 14px;
-  background-color: #e53935;
-  color: white;
+  padding: 8px 16px;
   border: none;
-  border-radius: 6px;
+  background-color: #1976d2;
+  color: white;
+  border-radius: 4px;
   cursor: pointer;
 }
 
+.tabs button:hover,
 #logoutBtn:hover {
-  background-color: #c62828;
+  background-color: #115293;
 }
+
 table {
   width: 100%;
   border-collapse: collapse;
-  margin-top: 20px;
+  margin-top: 10px;
 }
 
-th,
-td {
+table th,
+table td {
   padding: 10px;
   text-align: left;
   border-bottom: 1px solid #ddd;
 }
 
-th {
-  background: #007bff;
-  color: white;
+table th {
+  background-color: #f0f0f0;
 }
 
 .delete-btn {
-  background: red;
+  padding: 6px 12px;
+  background-color: #d32f2f;
   color: white;
   border: none;
-  padding: 8px 12px;
+  border-radius: 4px;
   cursor: pointer;
-  border-radius: 5px;
 }
 
 .delete-btn:hover {
-  background: darkred;
+  background-color: #9a0007;
 }
-.tabs {
-  margin-top: 1rem;
+
+button:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
 }
-.tabs button {
-  margin-right: 10px;
-  padding: 0.5rem 1rem;
-  font-weight: bold;
+.change-role-btn {
+  padding: 6px 12px;
+  background-color: #ff9800;
+  color: white;
+  border: none;
+  border-radius: 4px;
   cursor: pointer;
+}
+
+.change-role-btn:hover {
+  background-color: #f57c00;
 }
 @media (max-width: 500px) {
 }

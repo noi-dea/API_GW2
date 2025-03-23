@@ -11,10 +11,12 @@
       <div class="header">
         <h1>Admin Dashboard</h1>
         <div class="tabs">
-          <button onclick="showTab('products')">Products</button>
-          <button onclick="showTab('users')">Users</button>
+          <button class="products-btn" onclick="showTab('products')">
+            Products
+          </button>
+          <button class="users-btn" onclick="showTab('users')">Users</button>
+          <button onclick="logout()" id="logoutBtn">Logout</button>
         </div>
-        <button onclick="logout()" id="logoutBtn">Logout</button>
       </div>
 
       <!-- Products Table -->
@@ -132,9 +134,9 @@
               <td>${user.name}</td>
               <td>${user.role}</td>
               <td>
-                <button onclick="changeRole('${user._id}', '${
-              user.role === "admin" ? "user" : "admin"
-            }')">
+                <button class="change-role-btn" onclick="changeRole('${
+                  user._id
+                }', '${user.role === "admin" ? "user" : "admin"}')">
                   Make ${user.role === "admin" ? "User" : "Admin"}
                 </button>
               </td>
