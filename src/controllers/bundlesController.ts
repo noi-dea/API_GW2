@@ -20,7 +20,7 @@ export const getAllBundles = async(req:Request, res:Response)=>{
 export const getBundleById = async(req:Request, res:Response)=>{
     try{
         const {id} = req.params;
-        const bundles = await Bundle.find({_id:id});
+        const bundles = await Bundle.findOne({_id:id});
         res.status(200).json(bundles);
     }
     catch(err){
@@ -71,5 +71,47 @@ export const getBundlesByQuery = async (req:Request, res:Response)=>{
         err instanceof Error
             ? res.status(500).json({message: err.message})
             : res.status(500).json({message: "Something went wrong"});
+    }
+}
+
+// Add a new bundle to the database
+export const addBundle = async (req:Request, res:Response)=>{
+    try{
+        const {name, type, series, img, price} = req.body;
+        if (!name || !type || !series || !img || !price){
+            throw new Error("Fill in all fields");
+        }
+        const bundle = await Bundle.create({name, type, series, img, price});
+        res.status(201).json(bundle);
+    }
+    catch(err){
+        err instanceof ValidationError
+            ? res.status(400).json({message: err.message})
+            : err instanceof Error
+                ? res.status(500).json({message: err.message})
+                : res.status(500).json({message: "Something went wrong"});
+    }
+}
+
+
+// Update the details of an existing bundle in the database
+export const updateBundle = async (req:Request, res:Response)=>{
+    try{
+        const {id} = req.params;
+        const {name, type, series, img, price} = req.body;
+        const bundle = await Bundle.findByIdAndUpdate(id, {
+            name, type, series, img, price
+        });
+        res.status(200).json({message:"Success", data:bundle});
+        if (!bundle){
+            throw new Error("No valid bundle found");
+        }
+    }
+    catch(err){
+        err instanceof ValidationError
+            ? res.status(400).json({message: err.message})
+            : err instanceof Error
+                ? res.status(500).json({message: err.message})
+                : res.status(500).json({message: "Something went wrong"});
     }
 }

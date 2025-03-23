@@ -1,5 +1,5 @@
 import { Router } from "express"
-import { getBundleById, getBundlesByQuery } from "../controllers/bundlesController";
+import {  getBundleById, getBundlesByQuery } from "../controllers/bundlesController";
 
 
 
