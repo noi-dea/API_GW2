@@ -41,9 +41,9 @@ const options = {
                 hitPoints: {type: "number"},
                 abilities: {type: "object",
                     properties:{
-                        name:"string",
-                        cost:"number",
-                        damage:"number"
+                        name:{type:"string"},
+                        cost:{type:"number"},
+                        damage:{type:"number"}
                     }
                 },
                 imageURL:{type: "string"},
