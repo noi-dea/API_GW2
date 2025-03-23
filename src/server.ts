@@ -42,7 +42,7 @@ app.use("/api", isAuth, setterRoutes);
 app.use("/api", isAuth, transactionRoutes);
 app.get("/login", (req, res) => res.render("login"));
 app.get("/register", (req, res) => res.render("register"));
-app.get("/verify/:token", verificationEmail);
+app.get("/api/login/verify/:token", verificationEmail);
 app.get("/dashboard", isAuth, isAdmin, renderDashboard);
 
 // app.get("/dashboard", (req, res) => {

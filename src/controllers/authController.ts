@@ -22,6 +22,13 @@ export const register = async (req: Request, res: Response) => {
       return;
     }
 
+    // check if email is already registered
+    const existingUser = await User.findOne({ email });
+    if (existingUser) {
+      res.status(400).json({ message: "Email is already registered." });
+      return;
+    }
+
     const userRole = role === "admin" ? "admin" : "user";
     // encrypt password
     const hashPass = await bcrypt.hash(password, saltRounds);
@@ -30,12 +37,11 @@ export const register = async (req: Request, res: Response) => {
       expiresIn: "1h",
     });
 
-    const verificationLink = `${BASE_URL}/verify/${verificationToken}`;
+    const verificationLink = `${BASE_URL}/api/login/verify/${verificationToken}`;
 
     await sendEmail({
       name,
       email,
-      type: "verify",
       link: verificationLink,
     });
 
@@ -45,6 +51,7 @@ export const register = async (req: Request, res: Response) => {
       email,
       password: hashPass,
       role: userRole,
+      isVerified: false,
     });
 
     if (!SECRET) {
@@ -73,7 +80,7 @@ export const register = async (req: Request, res: Response) => {
       maxAge: 24 * 60 * 60 * 1000,
     });
 
-    const redirectUrl = userRole === "admin" ? "/dashboard" : "/login";
+    const redirectUrl = userRole === "admin" ? "/login" : "/login";
     res.status(201).json({
       message: "User created successfully",
       user: userResponse,
@@ -202,23 +209,19 @@ export const verificationEmail = async (req: Request, res: Response) => {
       return;
     }
     if (user.isVerified) {
-      res.status(400).json({ message: "Is already verified!" });
+      res.redirect("/login?verified=already");
       return;
     }
     user.verificationToken = null;
     user.isVerified = true;
     await user.save();
-    res.status(200).json({
-      message: "Email is verified",
-    });
-    // res.redirect(
-    //   "https://global.discourse-cdn.com/auth0/original/3X/6/9/69d4cd962892823265f21e8fed1915c5e903d31f.png"
-    // );
+    return res.redirect("/login?verified=1");
   } catch (error: unknown) {
     if (error instanceof Error) {
       res.status(500).json({ message: error.message });
     } else {
-      res.status(500).json({ message: "Something went wrong" });
+      res.redirect("/login?verified=0");
+      return;
     }
   }
 };

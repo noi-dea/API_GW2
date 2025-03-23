@@ -4,7 +4,6 @@ import * as ms from "ms";
 import {
   FROM_EMAIL,
   SENDGRID_API_KEY,
-  SENDGRID_TEMPLATE_ID_RESET,
   SENDGRID_TEMPLATE_ID_VERIFY,
 } from "../utils/env";
 import sgMail from "@sendgrid/mail";
@@ -13,7 +12,6 @@ interface UserPayload {
   _id: Types.ObjectId;
   email: string;
   name: string;
-  //   avatar: string;
 }
 
 interface Params {
@@ -37,7 +35,6 @@ interface EmailData {
   name: string;
   email: string;
   link: string;
-  type: "verify" | "reset_password";
 }
 
 export const sendEmail = async (data: EmailData) => {
@@ -45,17 +42,10 @@ export const sendEmail = async (data: EmailData) => {
   try {
     const msg = {
       from: FROM_EMAIL as string,
-      template_id:
-        data.type === "verify"
-          ? SENDGRID_TEMPLATE_ID_VERIFY
-          : SENDGRID_TEMPLATE_ID_RESET,
+      template_id: SENDGRID_TEMPLATE_ID_VERIFY,
       personalizations: [
         {
-          to: [
-            {
-              email: data.email,
-            },
-          ],
+          to: [{ email: data.email }],
           dynamic_template_data: {
             ...data,
             date: new Date().toLocaleDateString("nl-BE"),
@@ -69,9 +59,9 @@ export const sendEmail = async (data: EmailData) => {
         },
       ] as [MailContent],
     };
-    JSON.stringify(msg.personalizations);
+
     await sgMail.send(msg);
   } catch (error) {
-    console.error(error);
+    console.error("Email sending failed:", error);
   }
 };
