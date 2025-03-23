@@ -79,10 +79,9 @@ export const register = async (req: Request, res: Response) => {
       sameSite: process.env.NODE_ENV === "production" ? "strict" : "lax",
       maxAge: 24 * 60 * 60 * 1000,
     });
-
-    const redirectUrl = userRole === "admin" ? "/login" : "/login";
+    const redirectUrl = "/login";
     res.status(201).json({
-      message: "User created successfully",
+      message: "User created successfully. Please check your email to verify.",
       user: userResponse,
       redirect: redirectUrl,
     });

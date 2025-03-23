@@ -1,6 +1,7 @@
 import { NextFunction, Request, Response } from "express";
 import jwt from "jsonwebtoken";
 const { JWT_SECRET } = process.env;
+import { User } from "../models/userModel";
 
 export const isAuth = async (
   req: Request,
@@ -35,16 +36,35 @@ export const isAuth = async (
     return;
   }
 };
-export const isAdmin = (req: Request, res: Response, next: NextFunction) => {
+
+export const isAdmin = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
   try {
     // @ts-ignore
-    if (!req.user || req.user.role !== "admin") {
-      res.status(403).json({ message: "Access denied - Admins only" });
-      return;
+    const userFromToken = req.user;
+    if (!userFromToken) {
+      return res.status(401).json({ message: "Unauthorized" });
     }
+
+    const user = await User.findById(userFromToken._id);
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
+    }
+
+    if (!user.isVerified) {
+      return res.status(403).json({ message: "Email not verified" });
+    }
+
+    if (user.role !== "admin") {
+      return res.status(403).json({ message: "Access denied - Admins only" });
+    }
+
     next();
   } catch (err) {
-    res.status(500).json({ message: "Server error" });
-    return;
+    console.error("isAdmin middleware error:", err);
+    return res.status(500).json({ message: "Server error" });
   }
 };

@@ -63,20 +63,25 @@
       // Show verification message from URL
       const params = new URLSearchParams(window.location.search);
       const verified = params.get("verified");
+      const msg = params.get("msg");
       const msgContainer = document.getElementById("verify-message");
 
-      if (verified) {
+      if (verified || msg) {
         let message = "";
         let alertClass = "info";
 
         if (verified === "1") {
-          message = "✅ Your email has been verified. Please log in.";
+          message = "Your email has been verified. Please log in.";
           alertClass = "success";
         } else if (verified === "0") {
-          message = "❌ Verification link is invalid or expired.";
+          message = "Verification link is invalid or expired.";
           alertClass = "error";
         } else if (verified === "already") {
-          message = "ℹ️ Your email is already verified.";
+          message = "Your email is already verified.";
+          alertClass = "info";
+        } else if (msg === "verify") {
+          message =
+            "Please check your email to verify your account before logging in.";
           alertClass = "info";
         }
 
