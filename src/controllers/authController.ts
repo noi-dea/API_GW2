@@ -2,7 +2,9 @@
 import bcrypt from "bcrypt";
 import { Request, Response } from "express";
 import { User } from "../models/userModel";
-import { signToken } from "../utils/helper";
+import { sendEmail, signToken } from "../utils/helper";
+import { BASE_URL, JWT_SECRET } from "../utils/env";
+import jwt from "jsonwebtoken";
 
 // variables
 const saltRounds = 10;
@@ -23,6 +25,20 @@ export const register = async (req: Request, res: Response) => {
     const userRole = role === "admin" ? "admin" : "user";
     // encrypt password
     const hashPass = await bcrypt.hash(password, saltRounds);
+
+    const verificationToken = jwt.sign({ email }, JWT_SECRET as string, {
+      expiresIn: "1h",
+    });
+
+    const verificationLink = `${BASE_URL}/verify/${verificationToken}`;
+
+    await sendEmail({
+      name,
+      email,
+      type: "verify",
+      link: verificationLink,
+    });
+
     // create user
     const response = await User.create({
       name,
@@ -58,13 +74,11 @@ export const register = async (req: Request, res: Response) => {
     });
 
     const redirectUrl = userRole === "admin" ? "/dashboard" : "/login";
-    res
-      .status(201)
-      .json({
-        message: "User created successfully",
-        user: userResponse,
-        redirect: redirectUrl,
-      });
+    res.status(201).json({
+      message: "User created successfully",
+      user: userResponse,
+      redirect: redirectUrl,
+    });
   } catch (err) {
     if (err instanceof Error) {
       res.status(500).json({ message: err.message });
@@ -93,6 +107,12 @@ export const login = async (req: Request, res: Response) => {
       res.status(400).json({ message: "User not found" });
       return;
     }
+
+    if (!user.isVerified) {
+      res.status(400).json({ message: "Email is not verified!" });
+      return;
+    }
+
     // Check if passwords match
     const isMatch = await bcrypt.compare(password, user.password);
     // if passwords don't match
@@ -156,6 +176,47 @@ export const logout = async (req: Request, res: Response) => {
   } catch (err) {
     if (err instanceof Error) {
       res.status(500).json({ message: err.message });
+    } else {
+      res.status(500).json({ message: "Something went wrong" });
+    }
+  }
+};
+
+export const verificationEmail = async (req: Request, res: Response) => {
+  try {
+    const { token } = req.params;
+    if (!token) {
+      res.status(400).json({ message: "Invalid token" });
+      return;
+    }
+
+    const decoded = jwt.verify(token, JWT_SECRET as string);
+
+    if (typeof decoded === "string" || !("email" in decoded)) {
+      res.status(400).json({ message: "Invalid verification link." });
+      return;
+    }
+    const user = await User.findOne({ email: decoded.email });
+    if (!user) {
+      res.status(400).json({ message: "No user found!" });
+      return;
+    }
+    if (user.isVerified) {
+      res.status(400).json({ message: "Is already verified!" });
+      return;
+    }
+    user.verificationToken = null;
+    user.isVerified = true;
+    await user.save();
+    res.status(200).json({
+      message: "Email is verified",
+    });
+    // res.redirect(
+    //   "https://global.discourse-cdn.com/auth0/original/3X/6/9/69d4cd962892823265f21e8fed1915c5e903d31f.png"
+    // );
+  } catch (error: unknown) {
+    if (error instanceof Error) {
+      res.status(500).json({ message: error.message });
     } else {
       res.status(500).json({ message: "Something went wrong" });
     }
