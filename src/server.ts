@@ -36,7 +36,7 @@ app.use(cookieParser());
 app.use(express.json());
 
 // Routes
-app.use("/api", helloMiddleware, userRoutes);
+app.use("/api", isAuth, userRoutes);
 app.use("/api", helloMiddleware, productRoutes);
 app.use("/api", helloMiddleware, typeRoutes);
 app.use("/api", helloMiddleware, rarityRoutes);
