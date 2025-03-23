@@ -5,7 +5,8 @@ const { ValidationError } = MongooseError;
 // @ts-ignore No typings package available for following package
 import FuzzyMatching from "fuzzy-matching";
 
-const match = new FuzzyMatching(["box", "booster", "booster-bundle", "etb"]);
+const matchType = new FuzzyMatching(["box", "booster", "booster-bundle", "etb"]);
+const matchSeries = new FuzzyMatching(["Black & White", "Scarlet & Violet", "Sun & Moon", "Sword & Shield", "XY"]);
 
 // Function to get all bundles from the database
 export const getAllBundles = async(req:Request, res:Response)=>{
@@ -55,20 +56,22 @@ export const getBundlesByQuery = async (req:Request, res:Response)=>{
        }
 
         const typesArr = type?.split(",")
-        const spellCheckedTypes = typesArr?.map((type)=>match.get(type).value);
+        const spellCheckedTypes = typesArr?.map((type)=>matchType.get(type).value);
         console.log(spellCheckedTypes);
         const seriesArr = series?.split(",")
-        const spellCheckedSeries = seriesArr?.map((series)=>match.get(series).value);
+        const spellCheckedSeries = seriesArr?.map((series)=>matchSeries.get(series).value);
         const bundles = await Bundle.find();
         // --
         console.log(spellCheckedSeries);
         const response = bundles.filter((bundle)=>{
            const containsType =  typesArr == null || typesArr == undefined
                 ? true
+                // @ts-ignore
                 : spellCheckedTypes.includes(bundle.type);
             const containsSeries = seriesArr == null || seriesArr == undefined 
                 ? true
-                : seriesArr.includes(bundle.series);
+                // @ts-ignore
+                : spellCheckedSeries.includes(bundle.series);
             return containsType && containsSeries
         });
         // --
