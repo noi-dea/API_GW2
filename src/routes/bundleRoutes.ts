@@ -29,7 +29,7 @@ const router = Router();
  * 
  * /bundles/{id}:
  *   get:
- *     summary: Get a event by ID
+ *     summary: Get a bundle by ID
  *     tags: [Bundles]
  *     parameters:
  *       - in: path
