@@ -36,12 +36,12 @@ app.use(cookieParser());
 app.use(express.json());
 
 // Routes
-app.use("/api", isAuth, userRoutes);
 app.use("/api", helloMiddleware, productRoutes);
 app.use("/api", helloMiddleware, typeRoutes);
 app.use("/api", helloMiddleware, rarityRoutes);
 app.use("/api", helloMiddleware, bundleRoutes);
 app.use("/api", helloMiddleware, authRoutes);
+app.use("/api", isAuth, userRoutes);
 app.use("/api", isAuth, setterRoutes);
 app.use("/api", isAuth, transactionRoutes);
 app.get("/login", (req, res) => res.render("login"));
