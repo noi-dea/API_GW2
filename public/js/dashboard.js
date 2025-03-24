@@ -53,19 +53,12 @@ async function loadProducts() {
     tbody.innerHTML = "";
 
     products.forEach((product) => {
-      const typeString = Array.isArray(product.types)
-        ? product.types
-            .map((t) => (typeof t === "object" ? t.name : t))
-            .join(", ")
-        : product.types;
-
       tbody.appendChild(
         createTableRow(
           [
             product.name,
-            product.rarity,
+            product.rarity?.name || "—",
             `$${product.price.toFixed(2)}`,
-            // typeString,
             `<button class="delete-btn" onclick="deleteProduct('${product._id}')">Delete</button>`,
           ],
           `row-${product._id}`

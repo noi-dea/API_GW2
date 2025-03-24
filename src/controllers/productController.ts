@@ -4,7 +4,7 @@ import mongoose, { Error as MongooseError } from "mongoose";
 const { ValidationError } = MongooseError;
 import { Type } from "../models/typeModel";
 import { Rarity } from "../models/rarityModel";
-import { type RarityType, type RarityQueryType} from "../types";
+import { type RarityType, type RarityQueryType } from "../types";
 
 // Create/add a product into the database
 export const addProduct = async (req: Request, res: Response) => {
@@ -35,7 +35,9 @@ export const addProduct = async (req: Request, res: Response) => {
 // Get all products
 export const getAllProducts = async (req: Request, res: Response) => {
   try {
-    const products = await Product.find().populate("rarity").populate("types");
+    const products = await Product.find()
+      .populate("rarity", "name")
+      .populate("types", "name");
     res.status(200).json(products);
   } catch (error: unknown) {
     if (error instanceof Error) {
@@ -50,7 +52,9 @@ export const getAllProducts = async (req: Request, res: Response) => {
 export const getProduct = async (req: Request, res: Response) => {
   try {
     const { id } = req.params;
-    const product = await Product.findById(id).populate("rarity").populate("types");
+    const product = await Product.findById(id)
+      .populate("rarity")
+      .populate("types");
     if (!id) {
       res.status(400).json({
         message: "Please enter an ID",
@@ -86,11 +90,10 @@ export const getProductsByType = async (req: Request, res: Response) => {
     if (err instanceof Error) {
       res.status(500).json({ message: err.message });
     } else {
-      res.status(500).json({ message:"Something went wrong"});
+      res.status(500).json({ message: "Something went wrong" });
     }
   }
 };
-
 
 // Fetch Data for Dashboard
 export const renderDashboard = async (req: Request, res: Response) => {
@@ -102,7 +105,6 @@ export const renderDashboard = async (req: Request, res: Response) => {
     res.status(500).send("Internal Server Error");
   }
 };
-
 
 // Delete a product
 export const deleteProduct = async (req: Request, res: Response) => {
@@ -131,38 +133,44 @@ export const deleteProduct = async (req: Request, res: Response) => {
 };
 
 // get products based on rarity  (1 rarity via params)
-export const getProductsByRarity = async (req:Request, res:Response)=>{
-  try{
-    const {rarityName} = req.params;
-    const dbRarity:RarityType | null = await Rarity.findOne({name:rarityName});
+export const getProductsByRarity = async (req: Request, res: Response) => {
+  try {
+    const { rarityName } = req.params;
+    const dbRarity: RarityType | null = await Rarity.findOne({
+      name: rarityName,
+    });
     const products = await Product.find().populate("rarity").populate("types");
-    if(!dbRarity){
-      res.status(400).json({message: "Invalid input"});
+    if (!dbRarity) {
+      res.status(400).json({ message: "Invalid input" });
       return;
     }
-    if (!dbRarity._id){
-      res.status(500).json({message: "Something went wrong"});
+    if (!dbRarity._id) {
+      res.status(500).json({ message: "Something went wrong" });
       return;
     }
 
-    console.log("product.rarity._id.toString(): ", products[0].rarity._id.toString());
+    console.log(
+      "product.rarity._id.toString(): ",
+      products[0].rarity._id.toString()
+    );
     console.log("dbRarity._id.toString(): ", dbRarity._id.toString());
-    const filteredProducts = products.filter((product)=>product.rarity._id.toString()==dbRarity._id.toString());
+    const filteredProducts = products.filter(
+      (product) => product.rarity._id.toString() == dbRarity._id.toString()
+    );
     res.status(200).json(filteredProducts);
-  }
-  catch(err){
+  } catch (err) {
     err instanceof Error
-      ? res.status(500).json({message: err.message})
-      : res.status(500).json({message: "Something went wrong"});
+      ? res.status(500).json({ message: err.message })
+      : res.status(500).json({ message: "Something went wrong" });
   }
-}
+};
 
 // Get all products of x rarities
-export const getProductsByRarityQuery = async (req:Request, res:Response)=>{
-  try{
+export const getProductsByRarityQuery = async (req: Request, res: Response) => {
+  try {
     // @ts-ignore
-    const {rarities}:RarityQueryType = req.query;
-    if (!rarities){
+    const { rarities }: RarityQueryType = req.query;
+    if (!rarities) {
       getAllProducts(req, res);
       return;
     }
@@ -170,14 +178,13 @@ export const getProductsByRarityQuery = async (req:Request, res:Response)=>{
     const products = await Product.find().populate("rarity").populate("types");
     console.log(rarityNamesArr);
     // @ts-ignore
-    const matchingProducts = products.filter((product)=>product.rarity).filter((product)=>rarityNamesArr.includes(product.rarity.name));
+    const matchingProducts = products
+      .filter((product) => product.rarity)
+      .filter((product) => rarityNamesArr.includes(product.rarity.name));
     res.status(200).json(matchingProducts);
-
-
-  }
-  catch(err){
+  } catch (err) {
     err instanceof Error
-      ? res.status(500).json({message: err.message})
-      : res.status(500).json({message: "Something went wrong"});
+      ? res.status(500).json({ message: err.message })
+      : res.status(500).json({ message: "Something went wrong" });
   }
-} 
+};
