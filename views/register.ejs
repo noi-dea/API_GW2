@@ -44,7 +44,7 @@
           const role = document.getElementById("role").value;
 
           try {
-            const response = await fetch("/register", {
+            const response = await fetch("api/register", {
               method: "POST",
               headers: { "Content-Type": "application/json" },
               body: JSON.stringify({ name, email, password, role }),
@@ -53,7 +53,7 @@
             const data = await response.json();
 
             if (response.ok) {
-              window.location.href = data.redirect; // Redirect user after registration
+              window.location.href = `${data.redirect}?msg=verify`; // Redirect user after registration
             } else {
               document.getElementById("error-message").textContent =
                 data.message;

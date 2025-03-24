@@ -14,8 +14,8 @@ import transactionRoutes from "./routes/transactionRoutes";
 import { helloMiddleware } from "./middleware/exampleMiddleware";
 import mongoose from "mongoose";
 import { isAuth, isAdmin } from "./middleware/authMiddleWare";
+import { verificationEmail } from "./controllers/authController";
 import { renderDashboard } from "./controllers/productController";
-import { login, logout, register } from "./controllers/authController";
 import cookieParser from "cookie-parser";
 import swaggerUi from "swagger-ui-express";
 import {specs} from "./swagger";
@@ -46,9 +46,7 @@ app.use("/api", isAuth, setterRoutes);
 app.use("/api", isAuth, transactionRoutes);
 app.get("/login", (req, res) => res.render("login"));
 app.get("/register", (req, res) => res.render("register"));
-app.post("/register", register);
-app.post("/login", login);
-app.get("/logout", logout);
+app.get("/api/login/verify/:token", verificationEmail);
 app.get("/dashboard", isAuth, isAdmin, renderDashboard);
 
 // app.get("/dashboard", (req, res) => {

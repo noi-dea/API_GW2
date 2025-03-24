@@ -1,4 +1,5 @@
 import mongoose from "mongoose";
+import { StringDecoder } from "node:string_decoder";
 
 const productSchema = new mongoose.Schema(
   {
@@ -16,7 +17,7 @@ const productSchema = new mongoose.Schema(
         {
           name: String,
           cost: Number,
-          damage: Number,
+          damage: String,
         },
       ],
       required: true,

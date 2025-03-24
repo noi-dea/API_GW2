@@ -31,6 +31,12 @@ const userSchema = new mongoose.Schema(
       ref: "Product",
     },
     role: { type: String, enum: ["user", "admin"], default: "user" },
+    isVerified: {
+      type: Boolean,
+      default: false,
+    },
+    verificationToken: { type: String },
+    resetToken: { type: String },
   },
   {
     timestamps: true,
