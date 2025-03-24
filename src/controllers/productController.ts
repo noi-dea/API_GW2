@@ -36,7 +36,6 @@ export const addProduct = async (req: Request, res: Response) => {
 export const getAllProducts = async (req: Request, res: Response) => {
   try {
     const products = await Product.find().populate("rarity").populate("types");
-    console.log(products[0].types);
     res.status(200).json(products);
   } catch (error: unknown) {
     if (error instanceof Error) {
@@ -77,7 +76,7 @@ export const getProductsByType = async (req: Request, res: Response) => {
     const type = await Type.findOne()
       .where("name")
       .equals(typeName.toLocaleLowerCase());
-    const products = await Product.find().populate("types");
+    const products = await Product.find().populate("types").populate("rarity");
     const filteredProducts = products.filter((product) =>
       // @ts-ignore
       product.types.find((el) => el._id.toString() == type._id.toString())
@@ -96,7 +95,7 @@ export const getProductsByType = async (req: Request, res: Response) => {
 // Fetch Data for Dashboard
 export const renderDashboard = async (req: Request, res: Response) => {
   try {
-    const products = await Product.find().populate("types");
+    const products = await Product.find().populate("types").populate("rarity");
     res.render("dashboard", { products });
   } catch (err) {
     console.error("Error fetching products:", err);

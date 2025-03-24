@@ -107,7 +107,7 @@ export const login = async (req: Request, res: Response) => {
       return;
     }
     // retrieve connected userData
-    const user = await User.findOne({ email });
+    const user = await User.findOne({ email }).populate('address');
     // check if there's an existing account
     if (!user) {
       res.status(400).json({ message: "User not found" });

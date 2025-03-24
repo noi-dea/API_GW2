@@ -32,7 +32,7 @@ export const addUser = async (req: Request, res: Response) => {
 // Get all users
 export const getUsers = async (req: Request, res: Response) => {
   try {
-    const users = await User.find();
+    const users = await User.find().populate("address");
     res.status(200).json(users);
   } catch (err) {
     if (err instanceof Error) {
@@ -47,7 +47,7 @@ export const getUsers = async (req: Request, res: Response) => {
 export const getUserById = async (req: Request, res: Response) => {
   try {
     const { id } = req.params;
-    const user = await User.findById(id);
+    const user = await User.findById(id).populate("address");
     res.status(200).json(user);
   } catch (err) {
     if (err instanceof Error) {
@@ -83,7 +83,7 @@ export const updateUserRole = async (req: Request, res: Response) => {
 
 export const getAllUsersDashboard = async (req: Request, res: Response) => {
   try {
-    const users = await User.find().select("_id name email role");
+    const users = await User.find().select("_id name email role").populate("address");
     res.status(200).json(users);
   } catch (err) {
     res.status(500).json({ message: "Something went wrong" });

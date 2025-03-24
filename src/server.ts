@@ -17,6 +17,8 @@ import { isAuth, isAdmin } from "./middleware/authMiddleWare";
 import { verificationEmail } from "./controllers/authController";
 import { renderDashboard } from "./controllers/productController";
 import cookieParser from "cookie-parser";
+import swaggerUi from "swagger-ui-express";
+import { specs } from "./swagger";
 
 // Variables
 const app = express();
@@ -41,11 +43,15 @@ app.use("/api", helloMiddleware, typeRoutes);
 app.use("/api", helloMiddleware, rarityRoutes);
 app.use("/api", helloMiddleware, bundleRoutes);
 app.use("/api", helloMiddleware, authRoutes);
+app.use("/api", isAuth, userRoutes);
 app.use("/api", isAuth, setterRoutes);
 app.use("/api", isAuth, transactionRoutes);
 app.get("/login", (req, res) => res.render("login"));
 app.get("/register", (req, res) => res.render("register"));
 app.get("/dashboard", isAuth, isAdmin, renderDashboard);
+// Swagger documentation
+app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(specs));
+
 app.all("*", notFound);
 
 // Database connection

@@ -30,6 +30,10 @@ const userSchema = new mongoose.Schema(
       },
       ref: "Product",
     },
+    address: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Address"
+    },
     role: { type: String, enum: ["user", "admin"], default: "user" },
     isVerified: {
       type: Boolean,
