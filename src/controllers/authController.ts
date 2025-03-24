@@ -15,7 +15,7 @@ const SECRET = process.env.JWT_SECRET;
 export const register = async (req: Request, res: Response) => {
   try {
     // retrieve fields
-    const { name, email, password, role } = req.body;
+    const { name, email, password } = req.body;
     // check if all fields are filled in
     if (!name || !email || !password) {
       res.status(400).json({ message: "All fields are required" });
@@ -29,7 +29,7 @@ export const register = async (req: Request, res: Response) => {
       return;
     }
 
-    const userRole = role === "admin" ? "admin" : "user";
+    const userRole = "user";
     // encrypt password
     const hashPass = await bcrypt.hash(password, saltRounds);
 

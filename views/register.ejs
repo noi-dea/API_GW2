@@ -19,12 +19,6 @@
         <label for="password">Password:</label>
         <input type="password" id="password" name="password" required />
 
-        <label for="role">Register as:</label>
-        <select id="role" name="role">
-          <option value="user">User</option>
-          <option value="admin">Admin</option>
-        </select>
-
         <button type="submit">Register</button>
       </form>
 
@@ -41,19 +35,18 @@
           const name = document.getElementById("name").value;
           const email = document.getElementById("email").value;
           const password = document.getElementById("password").value;
-          const role = document.getElementById("role").value;
 
           try {
             const response = await fetch("api/register", {
               method: "POST",
               headers: { "Content-Type": "application/json" },
-              body: JSON.stringify({ name, email, password, role }),
+              body: JSON.stringify({ name, email, password }),
             });
 
             const data = await response.json();
 
             if (response.ok) {
-              window.location.href = `${data.redirect}?msg=verify`; // Redirect user after registration
+              window.location.href = `${data.redirect}?msg=verify`;
             } else {
               document.getElementById("error-message").textContent =
                 data.message;
