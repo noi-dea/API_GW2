@@ -68,14 +68,11 @@ export const getBundlesByQuery = async (req: Request, res: Response) => {
     const spellCheckedTypes = typesArr?.map(
       (type) => matchType.get(type).value
     );
-    console.log(spellCheckedTypes);
     const seriesArr = series?.split(",");
     const spellCheckedSeries = seriesArr?.map(
       (series) => matchSeries.get(series).value
     );
     const bundles = await Bundle.find();
-    // --
-    console.log(spellCheckedSeries);
     const response = bundles.filter((bundle) => {
       const containsType =
         typesArr == null || typesArr == undefined

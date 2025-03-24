@@ -149,11 +149,6 @@ export const getProductsByRarity = async (req: Request, res: Response) => {
       return;
     }
 
-    console.log(
-      "product.rarity._id.toString(): ",
-      products[0].rarity._id.toString()
-    );
-    console.log("dbRarity._id.toString(): ", dbRarity._id.toString());
     const filteredProducts = products.filter(
       (product) => product.rarity._id.toString() == dbRarity._id.toString()
     );
@@ -176,7 +171,6 @@ export const getProductsByRarityQuery = async (req: Request, res: Response) => {
     }
     const rarityNamesArr = rarities.split(",");
     const products = await Product.find().populate("rarity").populate("types");
-    console.log(rarityNamesArr);
     // @ts-ignore
     const matchingProducts = products
       .filter((product) => product.rarity)
