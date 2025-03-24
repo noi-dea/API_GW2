@@ -14,7 +14,7 @@ body {
 }
 
 .container {
-  width: 60%;
+  max-width: 800px;
   min-width: 600px;
   margin: 50px auto;
   background: white;
@@ -64,7 +64,8 @@ table {
 
 table th,
 table td {
-  padding: 10px;
+  padding: 10px 20px;
+
   text-align: left;
   border-bottom: 1px solid #ddd;
 }
