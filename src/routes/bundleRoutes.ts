@@ -9,7 +9,7 @@ const router = Router();
  * @swagger
  * /bundles:
  *   get:
- *     summary: Get all events
+ *     summary: Get all bundles
  *     tags: [Bundles]
  *     responses:
  *       200:
