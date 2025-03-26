@@ -19,6 +19,12 @@ import { renderDashboard } from "./controllers/productController";
 import cookieParser from "cookie-parser";
 import swaggerUi from "swagger-ui-express";
 import { specs } from "./swagger";
+import multer from "multer";
+import path from "path";
+import {v2 as cloudinary} from "cloudinary";
+import { CloudinaryStorage } from 'multer-storage-cloudinary';
+import { CLOUDINARY_API_KEY, CLOUDINARY_API_SECRET, CLOUDINARY_CLOUD_NAME } from "./utils/env";
+import { Request, Response } from "express";
 
 // Variables
 const app = express();
@@ -34,6 +40,52 @@ app.use(express.static("public"));
 app.use(cors());
 app.use(cookieParser());
 app.use(express.json());
+app.use("/uploads", express.static("uploads"));
+
+cloudinary.config({
+  cloud_name: CLOUDINARY_CLOUD_NAME,
+  api_key: CLOUDINARY_API_KEY,
+  api_secret: CLOUDINARY_API_SECRET
+})
+
+// MULTER-CLOUDINARY-VERSION
+const storage = new CloudinaryStorage({
+  cloudinary: cloudinary,
+  params: {
+    folder: 'profileAcc',
+  } as any,
+});
+
+const upload = multer({storage});
+
+// route
+app.post("/upload", isAuth, upload.single("image"), (req:Request, res:Response)=>{
+  try{
+    // check if there's a file selected
+    if (!req.file){
+      res.status(400).send("No file uploaded");
+      return;
+    }
+    console.log(req.file);
+    const base_url = `https://res.cloudinary.com/${CLOUDINARY_CLOUD_NAME}/image/upload/`;
+    const trans = "c_thumb,g_face,h_200,w_200/r_max/f_auto/";
+    const end = req.file.filename + path.extname(req.file.originalname);
+    // res.end();
+
+    // Show response page
+    // const imgURL = `/uploads/${req.file.filename}`;
+    // console.log(imgURL);
+    res.status(200).send(`
+      <h1>Image uploaded successfully</h1>
+      <img src=${base_url + trans + end} />
+      `)
+  }
+  catch(err){
+    err instanceof Error
+      ? res.status(500).json({message: err.message})
+      : res.status(500).json({message: "Something went wrong"});
+  }
+})
 
 // Routes
 app.get("/api/login/verify/:token", verificationEmail);
