@@ -59,7 +59,7 @@ const storage = new CloudinaryStorage({
 const upload = multer({storage});
 
 // route
-app.post("/upload", isAuth, upload.single("image"), (req:Request, res:Response)=>{
+app.post("/upload", upload.single("image"), (req:Request, res:Response)=>{
   try{
     // check if there's a file selected
     if (!req.file){
