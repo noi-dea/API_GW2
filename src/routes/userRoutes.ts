@@ -5,6 +5,7 @@ import {
   getUserById,
   updateUserRole,
   getAllUsersDashboard,
+  updateProfilePic,
 } from "../controllers/userController";
 
 const router = express.Router();
@@ -55,6 +56,7 @@ router
   .get("/users", getUsers)
   .get("/users/admin-view", isAuth, isAdmin, getAllUsersDashboard)
   .get("/users/:id", getUserById)
-  .patch("/users/:id/role", isAuth, isAdmin, updateUserRole);
+  .patch("/users/:id/role", isAuth, isAdmin, updateUserRole)
+  .patch("/users/:id", updateProfilePic);
 
 export default router;

@@ -11,7 +11,7 @@ const options = {
     servers: isProduction
       ? [
           {
-            url: "https://gw2-v1-0-0.onrender.com", 
+            url: "https://gw2-v1-0-0.onrender.com/api", 
             description: "Production server",
           },
         ]

@@ -89,3 +89,22 @@ export const getAllUsersDashboard = async (req: Request, res: Response) => {
     res.status(500).json({ message: "Something went wrong" });
   }
 };
+
+
+export const updateProfilePic = async (req:Request, res:Response)=>{
+  try{
+    const {id} = req.params;
+    const {avatar} = req.body;
+    if (!avatar){
+      throw new Error('No valid input given');
+    }
+    const user = await User.findByIdAndUpdate(id, {avatar});
+  }
+  catch(err){
+    err instanceof ValidationError
+      ? res.status(400).json({message: err.message})
+      : err instanceof Error
+        ? res.status(500).json({message: err.message})
+        : res.status(500).json({message: "Something went wrong"});
+  }
+}
